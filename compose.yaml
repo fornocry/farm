@@ -1,0 +1,62 @@
+version: '3.8'  # Добавьте версию, если её нет
+
+services:
+  nats:
+    image: nats
+    restart: always
+    expose:
+      - "4222"
+    volumes:
+      - nats-data:/nats-data
+
+  postgres:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  bot:
+    build:
+      context: ./bot
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - nats
+      - postgres
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      GIN_MODE: "release"
+    depends_on:
+      - nats
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - nats
+      - postgres
+
+
+volumes:
+  postgres-data:
+  nats-data:
+  images:
