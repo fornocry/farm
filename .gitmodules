@@ -1,0 +1,9 @@
+[submodule "frontend"]
+	path = frontend
+	url = git@github.com:fornocry/farm_frontend.git
+[submodule "backend"]
+	path = backend
+	url = git@github.com:fornocry/farm_backend.git
+[submodule "bot"]
+	path = bot
+	url = git@github.com:fornocry/farm_bot.git
